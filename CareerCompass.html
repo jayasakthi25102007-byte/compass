@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareerCompass — AI Career Advisor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0E0B07;
+  --surface:#161209;
+  --surface2:#1E1810;
+  --surface3:#252018;
+  --border:#2E2618;
+  --border2:#3A3020;
+  --gold:#D4A843;
+  --gold2:#E8C060;
+  --gold-dim:rgba(212,168,67,0.12);
+  --gold-glow:rgba(212,168,67,0.08);
+  --amber:#F59E0B;
+  --green:#34D399;
+  --blue:#60A5FA;
+  --red:#F87171;
+  --purple:#C084FC;
+  --text:#F5F0E8;
+  --text2:#A89880;
+  --text3:#6A5A48;
+  --r:10px;--r-sm:6px;--r-lg:16px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(14,11,7,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);height:56px;display:flex;align-items:center;padding:0 2rem;gap:1rem}
+.logo{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;color:var(--text);letter-spacing:-.3px;text-decoration:none}
+.logo-mark{width:28px;height:28px;background:linear-gradient(135deg,var(--gold),var(--amber));border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px}
+.nav-links{display:flex;gap:2px;margin-left:auto}
+.nav-link{color:var(--text2);font-size:13px;font-weight:500;padding:6px 12px;border-radius:var(--r-sm);text-decoration:none;transition:all .15s}
+.nav-link:hover{color:var(--text);background:var(--surface2)}
+.nav-badge{background:var(--gold-dim);color:var(--gold);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;border:1px solid rgba(212,168,67,.25);margin-left:4px}
+.nav-btn{background:linear-gradient(135deg,var(--gold),var(--amber));color:#0E0B07;font-size:13px;font-weight:700;padding:7px 16px;border-radius:var(--r-sm);border:none;cursor:pointer;transition:opacity .15s;margin-left:6px;font-family:'Inter',sans-serif}
+.nav-btn:hover{opacity:.85}
+
+/* HERO */
+.hero{position:relative;padding:5rem 2rem 4rem;text-align:center;overflow:hidden}
+.hero-glow{position:absolute;top:-120px;left:50%;transform:translateX(-50%);width:700px;height:500px;background:radial-gradient(ellipse,rgba(212,168,67,.08) 0%,transparent 70%);pointer-events:none}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:44px 44px;opacity:.25;pointer-events:none;mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,black,transparent)}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border2);color:var(--text2);font-size:11px;font-weight:600;padding:5px 14px;border-radius:20px;margin-bottom:1.5rem;letter-spacing:.5px;text-transform:uppercase}
+.hero-eyebrow i{color:var(--gold);font-size:13px}
+.hero h1{font-size:clamp(2.2rem,5vw,3.8rem);font-weight:900;line-height:1.05;letter-spacing:-1.5px;margin-bottom:1.2rem;max-width:800px;margin-left:auto;margin-right:auto}
+.hero h1 .accent{background:linear-gradient(135deg,var(--gold),var(--amber),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:1rem;color:var(--text2);max-width:520px;margin:0 auto 2.5rem;line-height:1.7}
+.hero-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn-primary{background:linear-gradient(135deg,var(--gold),var(--amber));color:#0E0B07;border:none;padding:11px 24px;border-radius:var(--r-sm);font-size:14px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:all .15s;font-family:'Inter',sans-serif}
+.btn-primary:hover{opacity:.85;transform:translateY(-1px)}
+.btn-secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border2);padding:11px 24px;border-radius:var(--r-sm);font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif}
+.btn-secondary:hover{border-color:var(--gold);color:var(--gold)}
+
+/* STATS */
+.stats-row{display:flex;justify-content:center;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--surface)}
+.stat-box{flex:1;max-width:200px;padding:1.5rem 1rem;text-align:center;border-right:1px solid var(--border)}
+.stat-box:last-child{border-right:none}
+.stat-val{font-size:1.8rem;font-weight:800;letter-spacing:-1px;background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-lbl{font-size:11px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:.8px;margin-top:2px}
+
+/* LAYOUT */
+.page{max-width:1080px;margin:0 auto;padding:0 2rem}
+.sec-head{padding:3rem 0 1.5rem}
+.sec-kicker{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--gold);font-family:'JetBrains Mono',monospace;margin-bottom:.5rem}
+.sec-title{font-size:1.5rem;font-weight:800;letter-spacing:-.5px;margin-bottom:.4rem}
+.sec-desc{font-size:14px;color:var(--text2)}
+
+/* ADVISOR */
+.advisor-shell{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin-bottom:2rem}
+.tab-bar{display:flex;border-bottom:1px solid var(--border);background:var(--surface);padding:0 4px;gap:2px}
+.tab{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:13px 10px;font-size:12px;font-weight:600;color:var(--text3);cursor:pointer;border:none;background:none;transition:all .15s;position:relative;font-family:'Inter',sans-serif}
+.tab i{font-size:15px}
+.tab.active{color:var(--gold)}
+.tab.active::after{content:'';position:absolute;bottom:0;left:10%;right:10%;height:2px;background:linear-gradient(90deg,var(--gold),var(--amber));border-radius:2px 2px 0 0}
+.tab-panel{display:none;padding:1.75rem}
+.tab-panel.active{display:block}
+
+/* FORM */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+.field{display:flex;flex-direction:column;gap:5px}
+.field.full{grid-column:1/-1}
+.field label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.7px}
+.field input,.field select,.field textarea{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:9px 12px;font-size:13px;color:var(--text);outline:none;transition:border .15s;font-family:'Inter',sans-serif;-webkit-appearance:none}
+.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236A5A48' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold);background:var(--surface3)}
+.field input::placeholder{color:var(--text3)}
+.field textarea{resize:vertical;min-height:72px}
+.skill-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;min-height:28px}
+.chip{display:inline-flex;align-items:center;gap:4px;background:var(--gold-dim);color:var(--gold);border:1px solid rgba(212,168,67,.25);padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;transition:background .15s;font-family:'Inter',sans-serif}
+.chip:hover{background:rgba(212,168,67,.2)}
+.chip i{font-size:11px}
+.quick-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.qchip{background:var(--surface3);border:1px solid var(--border2);color:var(--text2);padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;cursor:pointer;transition:all .15s;border:none;font-family:'Inter',sans-serif}
+.qchip:hover{background:var(--gold-dim);color:var(--gold)}
+.skill-input-row{display:flex;gap:6px}
+.skill-input-row input{flex:1}
+.add-chip-btn{background:linear-gradient(135deg,var(--gold),var(--amber));color:#0E0B07;border:none;padding:9px 14px;border-radius:var(--r-sm);font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif}
+.next-btn{margin-top:1.2rem;width:100%;background:var(--surface2);color:var(--text);border:1px solid var(--border2);padding:11px;border-radius:var(--r-sm);font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s;font-family:'Inter',sans-serif}
+.next-btn:hover{border-color:var(--gold);color:var(--gold)}
+.generate-btn{margin-top:1.2rem;width:100%;background:linear-gradient(135deg,var(--gold),var(--amber));color:#0E0B07;border:none;padding:13px;border-radius:var(--r-sm);font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .15s;font-family:'Inter',sans-serif}
+.generate-btn:hover{opacity:.85}
+
+/* LOADER */
+.loader{display:none;padding:3rem;text-align:center}
+.loader.show{display:block}
+.loader-ring{width:40px;height:40px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 1rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loader-step{font-size:13px;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-top:.5rem}
+
+/* RESULTS */
+.results{display:none}
+.results.show{display:block}
+.results-header{display:flex;align-items:flex-start;justify-content:space-between;padding:1.5rem 0;border-bottom:1px solid var(--border);margin-bottom:1.5rem;flex-wrap:wrap;gap:12px}
+.results-title{font-size:1.1rem;font-weight:700;letter-spacing:-.3px}
+.results-meta{font-size:12px;color:var(--text3);margin-top:3px;font-family:'JetBrains Mono',monospace}
+.reset-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text2);padding:7px 14px;border-radius:var(--r-sm);font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
+.reset-btn:hover{border-color:var(--gold);color:var(--gold)}
+.result-section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-bottom:.9rem;display:flex;align-items:center;gap:8px}
+.result-section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* CAREER CARDS */
+.career-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:.9rem;margin-bottom:2.5rem}
+.c-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.c-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--gold-glow),transparent);opacity:0;transition:opacity .2s}
+.c-card:hover{border-color:rgba(212,168,67,.35);transform:translateY(-2px)}
+.c-card:hover::before{opacity:1}
+.c-card.top-match{border-color:rgba(212,168,67,.35)}
+.c-card.top-match::before{opacity:.6}
+.top-tag{position:absolute;top:10px;right:10px;background:linear-gradient(135deg,var(--gold),var(--amber));color:#0E0B07;font-size:9px;font-weight:800;padding:2px 8px;border-radius:20px;letter-spacing:.5px;text-transform:uppercase}
+.c-icon{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:.9rem;background:var(--surface3);border:1px solid var(--border)}
+.c-title{font-size:14px;font-weight:700;margin-bottom:3px;letter-spacing:-.2px}
+.c-sub{font-size:12px;color:var(--text3);margin-bottom:.9rem}
+.c-match-row{display:flex;align-items:center;gap:8px;margin-bottom:.9rem}
+.c-bar{flex:1;height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+.c-fill{height:100%;border-radius:2px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.c-pct{font-size:12px;font-weight:700;color:var(--gold);font-family:'JetBrains Mono',monospace;white-space:nowrap}
+.c-skills{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:.9rem}
+.s-pill{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600}
+.s-have{background:rgba(52,211,153,.1);color:var(--green);border:1px solid rgba(52,211,153,.2)}
+.s-need{background:rgba(212,168,67,.1);color:var(--gold);border:1px solid rgba(212,168,67,.2)}
+.c-view-btn{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text2);padding:8px;border-radius:var(--r-sm);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif}
+.c-view-btn:hover{border-color:var(--gold);color:var(--gold)}
+
+/* SKILL GAP */
+.gap-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;margin-bottom:2.5rem}
+.gap-row{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.gap-row:last-child{margin-bottom:0}
+.gap-lbl{width:140px;font-size:12px;font-weight:600;color:var(--text2);flex-shrink:0}
+.gap-track{flex:1;height:6px;background:var(--surface3);border-radius:3px;overflow:hidden}
+.gap-have{height:100%;background:linear-gradient(90deg,var(--green),#059669);border-radius:3px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.gap-miss{height:100%;background:linear-gradient(90deg,var(--gold),var(--amber));border-radius:3px;transition:width 1.2s cubic-bezier(.4,0,.2,1);opacity:.6}
+.gap-val{font-size:11px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--text3);width:36px;text-align:right}
+.gap-footer{display:flex;gap:16px;padding-top:.9rem;margin-top:.3rem;border-top:1px solid var(--border)}
+.gap-leg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text3)}
+.gap-dot{width:10px;height:6px;border-radius:2px;flex-shrink:0}
+
+/* ROADMAP */
+.roadmap-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;margin-bottom:2.5rem}
+.roadmap-header{display:flex;align-items:center;gap:10px;margin-bottom:1rem}
+.roadmap-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;background:var(--surface3);border:1px solid var(--border)}
+.roadmap-title{font-size:14px;font-weight:700;letter-spacing:-.2px}
+.roadmap-sub{font-size:12px;color:var(--text3)}
+.road-steps{display:flex;flex-direction:column}
+.road-step{display:flex;gap:12px;padding:10px 0;position:relative}
+.road-step:not(:last-child)::before{content:'';position:absolute;left:11px;top:32px;bottom:0;width:1px;background:var(--border)}
+.road-num{width:24px;height:24px;border-radius:50%;background:var(--gold-dim);border:1px solid rgba(212,168,67,.25);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:var(--gold);flex-shrink:0;font-family:'JetBrains Mono',monospace;margin-top:1px}
+.road-text{font-size:13px;color:var(--text2);padding-top:2px;line-height:1.5}
+
+/* PLANNER */
+.planner-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:2.5rem}
+.planner-row{display:flex;align-items:center;gap:14px;padding:11px 1.25rem;border-bottom:1px solid var(--border);transition:background .15s}
+.planner-row:last-child{border-bottom:none}
+.planner-row:hover{background:var(--surface2)}
+.planner-day-tag{background:var(--gold-dim);color:var(--gold);font-size:10px;font-weight:700;padding:3px 9px;border-radius:5px;font-family:'JetBrains Mono',monospace;width:52px;text-align:center;flex-shrink:0;border:1px solid rgba(212,168,67,.2)}
+.planner-task{font-size:13px;color:var(--text);flex:1;font-weight:500}
+.planner-dur{font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;white-space:nowrap}
+
+/* COLLEGES */
+.college-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.9rem;margin-bottom:2.5rem}
+.col-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1rem;transition:all .15s}
+.col-card:hover{border-color:rgba(212,168,67,.3)}
+.col-name{font-size:13px;font-weight:700;margin-bottom:2px}
+.col-type{font-size:11px;color:var(--text3);margin-bottom:.7rem}
+.col-tags{display:flex;flex-wrap:wrap;gap:4px}
+.col-tag{font-size:10px;background:var(--surface2);border:1px solid var(--border);color:var(--text3);padding:2px 8px;border-radius:5px;font-family:'JetBrains Mono',monospace}
+
+/* HOW IT WORKS */
+.hiw-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.9rem;padding-bottom:3.5rem}
+.hiw-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;transition:border .15s}
+.hiw-card:hover{border-color:rgba(212,168,67,.3)}
+.hiw-num{font-size:11px;font-weight:800;color:var(--gold);font-family:'JetBrains Mono',monospace;margin-bottom:.7rem}
+.hiw-icon{font-size:24px;margin-bottom:.7rem}
+.hiw-title{font-size:13px;font-weight:700;margin-bottom:.3rem}
+.hiw-desc{font-size:12px;color:var(--text3);line-height:1.6}
+
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);z-index:200;align-items:center;justify-content:center;padding:1rem}
+.modal-bg.open{display:flex}
+.modal-box{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r-lg);padding:1.75rem;max-width:500px;width:100%;max-height:85vh;overflow-y:auto;position:relative}
+.modal-close{position:absolute;top:12px;right:12px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px}
+.modal-icon{font-size:2rem;margin-bottom:.7rem}
+.modal-title{font-size:1.1rem;font-weight:800;letter-spacing:-.3px;margin-bottom:.3rem}
+.modal-score{display:inline-flex;align-items:center;gap:5px;background:var(--gold-dim);color:var(--gold);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;border:1px solid rgba(212,168,67,.25);margin-bottom:1.1rem;font-family:'JetBrains Mono',monospace}
+.modal-sec{margin-bottom:1.1rem}
+.modal-sec-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:.5rem;font-family:'JetBrains Mono',monospace}
+.modal-sec p,.modal-sec li{font-size:13px;color:var(--text2);line-height:1.7}
+.modal-sec ul{padding-left:1.1rem}
+.modal-skills{display:flex;flex-wrap:wrap;gap:5px}
+.modal-apply{width:100%;background:linear-gradient(135deg,var(--gold),var(--amber));color:#0E0B07;border:none;padding:12px;border-radius:var(--r-sm);font-size:14px;font-weight:700;cursor:pointer;margin-top:1rem;font-family:'Inter',sans-serif}
+
+/* CHATBOT */
+.chat-fab{position:fixed;bottom:20px;right:20px;width:52px;height:52px;background:linear-gradient(135deg,var(--gold),var(--amber));border-radius:50%;display:flex;align-items:center;justify-content:center;color:#0E0B07;font-size:22px;cursor:pointer;box-shadow:0 4px 20px rgba(212,168,67,.35);z-index:300;border:none;transition:transform .2s}
+.chat-fab:hover{transform:scale(1.08)}
+.chat-fab .ti-x{display:none}
+.chat-fab.open .ti-message-chatbot{display:none}
+.chat-fab.open .ti-x{display:block}
+.chat-win{position:fixed;bottom:82px;right:20px;width:340px;height:480px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--r-lg);display:none;flex-direction:column;z-index:299;overflow:hidden;box-shadow:0 16px 48px rgba(0,0,0,.6)}
+.chat-win.open{display:flex}
+.chat-hdr{background:var(--surface2);border-bottom:1px solid var(--border);padding:12px 14px;display:flex;align-items:center;gap:10px}
+.chat-hdr-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);flex-shrink:0}
+.chat-hdr-info{flex:1}
+.chat-hdr-title{font-size:13px;font-weight:700;color:var(--text)}
+.chat-hdr-sub{font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace}
+.chat-msgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;background:var(--bg)}
+.chat-msg{max-width:85%;padding:9px 12px;border-radius:12px;font-size:12px;line-height:1.6}
+.chat-msg.bot{background:var(--surface);border:1px solid var(--border);color:var(--text2);align-self:flex-start;border-bottom-left-radius:3px}
+.chat-msg.user{background:linear-gradient(135deg,var(--gold),var(--amber));color:#0E0B07;align-self:flex-end;border-bottom-right-radius:3px;font-weight:600}
+.chat-suggs{display:flex;flex-wrap:wrap;gap:5px;padding:0 12px 8px}
+.chat-sugg{background:var(--surface2);border:1px solid var(--border);color:var(--text2);padding:4px 10px;border-radius:10px;font-size:10px;font-weight:600;cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif}
+.chat-sugg:hover{border-color:var(--gold);color:var(--gold)}
+.chat-foot{display:flex;gap:7px;padding:10px;border-top:1px solid var(--border);background:var(--surface)}
+.chat-foot input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:8px 14px;font-size:12px;color:var(--text);outline:none;font-family:'Inter',sans-serif}
+.chat-foot input:focus{border-color:var(--gold)}
+.chat-foot input::placeholder{color:var(--text3)}
+.chat-send-btn{width:32px;height:32px;background:linear-gradient(135deg,var(--gold),var(--amber));border:none;border-radius:50%;color:#0E0B07;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.chat-typing{display:flex;gap:3px;padding:9px 12px;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:12px;align-self:flex-start;border-bottom-left-radius:3px}
+.chat-typing span{width:5px;height:5px;background:var(--gold);border-radius:50%;animation:bounce 1.2s infinite;opacity:.6}
+.chat-typing span:nth-child(2){animation-delay:.2s}
+.chat-typing span:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-4px)}}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);background:var(--surface);padding:1.5rem 2rem;text-align:center;font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;line-height:2}
+footer strong{color:var(--gold)}
+
+@media(max-width:640px){
+  .form-grid{grid-template-columns:1fr}
+  .tab span{display:none}
+  .stats-row{flex-wrap:wrap}
+  .stat-box{min-width:50%}
+  nav .nav-links{display:none}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="#">
+    <div class="logo-mark"><i class="ti ti-compass" style="color:#0E0B07;font-size:15px"></i></div>
+    CareerCompass
+  </a>
+  <div class="nav-links">
+    <a class="nav-link" href="#advisor">Advisor</a>
+    <a class="nav-link" href="#hiw">How it works</a>
+    <a class="nav-link" href="#colleges">Colleges</a>
+  </div>
+  <span class="nav-badge">SIH25094</span>
+  <button class="nav-btn" onclick="document.getElementById('advisor').scrollIntoView({behavior:'smooth'})">Get started</button>
+</nav>
+
+<div class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-grid"></div>
+  <div style="position:relative;z-index:1">
+    <div class="hero-eyebrow"><i class="ti ti-sparkles"></i>Smart Education · Govt. of J&K · SIH25094</div>
+    <h1>Your career path,<br><span class="accent">decided by AI.</span></h1>
+    <p class="hero-sub">CareerCompass analyzes your skills, interests and goals — then builds a complete personalized career and education plan in seconds.</p>
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="document.getElementById('advisor').scrollIntoView({behavior:'smooth'})"><i class="ti ti-map"></i> Explore my career</button>
+      <button class="btn-secondary" onclick="document.getElementById('hiw').scrollIntoView({behavior:'smooth'})">How it works</button>
+    </div>
+  </div>
+</div>
+
+<div class="stats-row">
+  <div class="stat-box"><div class="stat-val" id="s1">0</div><div class="stat-lbl">Career Paths</div></div>
+  <div class="stat-box"><div class="stat-val" id="s2">0</div><div class="stat-lbl">Colleges Mapped</div></div>
+  <div class="stat-box"><div class="stat-val" id="s3">0</div><div class="stat-lbl">Skills Tracked</div></div>
+  <div class="stat-box"><div class="stat-val" id="s4">0</div><div class="stat-lbl">Students Guided</div></div>
+</div>
+
+<div class="page" id="advisor">
+  <div class="sec-head">
+    <div class="sec-kicker">// ai advisor</div>
+    <div class="sec-title">Build your profile</div>
+    <div class="sec-desc">Four quick steps — get a complete personalized career plan</div>
+  </div>
+  <div class="advisor-shell">
+    <div class="tab-bar">
+      <button class="tab active" onclick="goTab('profile',this)"><i class="ti ti-user"></i><span>Profile</span></button>
+      <button class="tab" onclick="goTab('interests',this)"><i class="ti ti-heart"></i><span>Interests</span></button>
+      <button class="tab" onclick="goTab('skills',this)"><i class="ti ti-tools"></i><span>Skills</span></button>
+      <button class="tab" onclick="goTab('goals',this)"><i class="ti ti-target"></i><span>Goals</span></button>
+    </div>
+    <div class="tab-panel active" id="tp-profile">
+      <div class="form-grid">
+        <div class="field"><label>Full Name</label><input id="p-name" type="text" placeholder="e.g. Jayasakthi V"></div>
+        <div class="field"><label>Branch</label>
+          <select id="p-dept">
+            <option value="">Select branch</option>
+            <option value="ECE">Electronics & Communication (ECE)</option>
+            <option value="CSE">Computer Science (CSE)</option>
+            <option value="EEE">Electrical Engineering (EEE)</option>
+            <option value="MECH">Mechanical Engineering</option>
+            <option value="IT">Information Technology</option>
+            <option value="AIDS">AI & Data Science</option>
+          </select>
+        </div>
+        <div class="field"><label>Year of Study</label>
+          <select id="p-year">
+            <option value="">Select year</option>
+            <option value="1">1st Year</option>
+            <option value="2">2nd Year</option>
+            <option value="3">3rd Year</option>
+            <option value="4">4th Year</option>
+          </select>
+        </div>
+        <div class="field"><label>CGPA / Percentage</label><input id="p-cgpa" type="number" placeholder="e.g. 8.2" min="0" max="10" step="0.1"></div>
+        <div class="field"><label>State</label>
+          <select id="p-state">
+            <option value="">Select state</option>
+            <option value="TN">Tamil Nadu</option>
+            <option value="KA">Karnataka</option>
+            <option value="AP">Andhra Pradesh</option>
+            <option value="KL">Kerala</option>
+            <option value="MH">Maharashtra</option>
+          </select>
+        </div>
+        <div class="field"><label>After Graduation Plan</label>
+          <select id="p-plan">
+            <option value="">Select</option>
+            <option value="job">Get a Job</option>
+            <option value="pg">Higher Studies (M.Tech)</option>
+            <option value="gate">GATE Exam</option>
+            <option value="startup">Startup / Freelance</option>
+            <option value="govt">Government Sector</option>
+          </select>
+        </div>
+      </div>
+      <button class="next-btn" onclick="goTabNext('interests')">Next — Interests <i class="ti ti-arrow-right"></i></button>
+    </div>
+    <div class="tab-panel" id="tp-interests">
+      <div class="form-grid">
+        <div class="field full"><label>Topics that excite you</label>
+          <div class="quick-chips">
+            <button class="qchip" onclick="addInt('AI / Machine Learning')">AI / ML</button>
+            <button class="qchip" onclick="addInt('Embedded Systems')">Embedded Systems</button>
+            <button class="qchip" onclick="addInt('Web Development')">Web Dev</button>
+            <button class="qchip" onclick="addInt('Data Analytics')">Data Analytics</button>
+            <button class="qchip" onclick="addInt('IoT')">IoT</button>
+            <button class="qchip" onclick="addInt('Robotics')">Robotics</button>
+            <button class="qchip" onclick="addInt('Cybersecurity')">Cybersecurity</button>
+            <button class="qchip" onclick="addInt('VLSI Design')">VLSI</button>
+            <button class="qchip" onclick="addInt('Signal Processing')">Signal Processing</button>
+            <button class="qchip" onclick="addInt('Cloud Computing')">Cloud</button>
+          </div>
+          <div class="skill-chips" id="int-chips"></div>
+        </div>
+        <div class="field"><label>Work Environment</label>
+          <select id="p-env">
+            <option value="">Select</option>
+            <option value="corporate">Corporate / MNC</option>
+            <option value="govt">Government / PSU</option>
+            <option value="startup">Startup</option>
+            <option value="research">Research / Academia</option>
+            <option value="freelance">Remote / Freelance</option>
+          </select>
+        </div>
+        <div class="field"><label>Expected Salary</label>
+          <select id="p-salary">
+            <option value="">Select range</option>
+            <option value="3-5">₹3–5 LPA</option>
+            <option value="5-8">₹5–8 LPA</option>
+            <option value="8-12">₹8–12 LPA</option>
+            <option value="12+">₹12+ LPA</option>
+          </select>
+        </div>
+        <div class="field full"><label>Career dream (optional)</label>
+          <textarea id="p-dream" placeholder="e.g. Work at ISRO, build a startup..."></textarea>
+        </div>
+      </div>
+      <button class="next-btn" onclick="goTabNext('skills')">Next — Skills <i class="ti ti-arrow-right"></i></button>
+    </div>
+    <div class="tab-panel" id="tp-skills">
+      <div class="form-grid">
+        <div class="field full"><label>Your Current Skills</label>
+          <div class="skill-input-row">
+            <input id="skill-in" type="text" placeholder="Type a skill and press Add..." onkeydown="if(event.key==='Enter')addSkill()">
+            <button class="add-chip-btn" onclick="addSkill()">+ Add</button>
+          </div>
+          <div class="quick-chips" style="margin-top:8px">
+            <button class="qchip" onclick="qs('Python')">Python</button>
+            <button class="qchip" onclick="qs('C++')">C++</button>
+            <button class="qchip" onclick="qs('HTML/CSS')">HTML/CSS</button>
+            <button class="qchip" onclick="qs('JavaScript')">JavaScript</button>
+            <button class="qchip" onclick="qs('Arduino')">Arduino</button>
+            <button class="qchip" onclick="qs('MATLAB')">MATLAB</button>
+            <button class="qchip" onclick="qs('IoT')">IoT</button>
+            <button class="qchip" onclick="qs('NumPy')">NumPy</button>
+            <button class="qchip" onclick="qs('MySQL')">MySQL</button>
+            <button class="qchip" onclick="qs('Embedded C')">Embedded C</button>
+          </div>
+          <div class="skill-chips" id="skill-chips"></div>
+        </div>
+        <div class="field"><label>Certifications</label>
+          <select id="p-cert">
+            <option value="">Select</option>
+            <option value="nptel">NPTEL</option>
+            <option value="cisco">Cisco Networking</option>
+            <option value="infosys">Infosys Springboard</option>
+            <option value="google">Google</option>
+            <option value="aws">AWS Cloud</option>
+            <option value="none">None yet</option>
+          </select>
+        </div>
+        <div class="field"><label>Programming Experience</label>
+          <select id="p-exp">
+            <option value="">Select level</option>
+            <option value="beginner">Beginner (&lt;6 months)</option>
+            <option value="intermediate">Intermediate (6–18 months)</option>
+            <option value="advanced">Advanced (1.5+ years)</option>
+          </select>
+        </div>
+      </div>
+      <button class="next-btn" onclick="goTabNext('goals')">Next — Goals <i class="ti ti-arrow-right"></i></button>
+    </div>
+    <div class="tab-panel" id="tp-goals">
+      <div class="form-grid">
+        <div class="field"><label>Short-Term Goal</label>
+          <select id="g-short">
+            <option value="">Select</option>
+            <option value="internship">Get a good internship</option>
+            <option value="placement">Campus placement</option>
+            <option value="gate">Clear GATE exam</option>
+            <option value="project">Build strong projects</option>
+            <option value="cert">Get certifications</option>
+          </select>
+        </div>
+        <div class="field"><label>Long-Term Goal</label>
+          <select id="g-long">
+            <option value="">Select</option>
+            <option value="engineer">Senior Engineer</option>
+            <option value="researcher">Research Scientist</option>
+            <option value="manager">Engineering Manager</option>
+            <option value="entrepreneur">Start my own company</option>
+            <option value="govt">Government / Defense</option>
+            <option value="abroad">Higher studies abroad</option>
+          </select>
+        </div>
+        <div class="field"><label>Biggest Challenge</label>
+          <select id="g-challenge">
+            <option value="">Select</option>
+            <option value="skills">Don't know which skills to learn</option>
+            <option value="career">Confused about career path</option>
+            <option value="college">Don't know which PG college</option>
+            <option value="job">How to get placed</option>
+            <option value="exam">How to prep for exams</option>
+          </select>
+        </div>
+        <div class="field"><label>Study hours per day</label>
+          <select id="g-hours">
+            <option value="">Select</option>
+            <option value="1">Less than 1 hour</option>
+            <option value="2">1–2 hours</option>
+            <option value="3">2–3 hours</option>
+            <option value="4">3–5 hours</option>
+            <option value="5">5+ hours</option>
+          </select>
+        </div>
+      </div>
+      <button class="generate-btn" onclick="runAdvisor()"><i class="ti ti-cpu"></i> Generate My Career Plan</button>
+    </div>
+  </div>
+  <div class="loader" id="loader">
+    <div class="loader-ring"></div>
+    <div style="font-size:13px;color:var(--text2)">Building your personalized career plan...</div>
+    <div class="loader-step" id="loader-step">Analyzing profile...</div>
+  </div>
+  <div class="results" id="results">
+    <div class="results-header">
+      <div>
+        <div class="results-title">Career plan for <span id="res-name" style="color:var(--gold)">you</span></div>
+        <div class="results-meta" id="res-meta"></div>
+      </div>
+      <button class="reset-btn" onclick="resetAdvisor()"><i class="ti ti-refresh"></i> Start over</button>
+    </div>
+    <div class="result-section-label">recommended career paths</div>
+    <div class="career-grid" id="career-grid"></div>
+    <div class="result-section-label">skill gap analysis</div>
+    <div class="gap-wrap" id="gap-chart"></div>
+    <div class="result-section-label">learning roadmap</div>
+    <div class="roadmap-wrap" id="roadmap"></div>
+    <div class="result-section-label">7-day study planner</div>
+    <div class="planner-wrap" id="planner"></div>
+    <div class="result-section-label">recommended colleges</div>
+    <div class="college-grid" id="college-grid"></div>
+  </div>
+</div>
+
+<div style="border-top:1px solid var(--border);background:var(--surface)">
+<div class="page" id="hiw">
+  <div class="sec-head">
+    <div class="sec-kicker">// process</div>
+    <div class="sec-title">How it works</div>
+    <div class="sec-desc">Four steps from profile to personalized plan</div>
+  </div>
+  <div class="hiw-grid">
+    <div class="hiw-card"><div class="hiw-num">01</div><div class="hiw-icon">👤</div><div class="hiw-title">Build your profile</div><div class="hiw-desc">Enter your branch, year, CGPA, interests, and skills in 4 quick steps.</div></div>
+    <div class="hiw-card"><div class="hiw-num">02</div><div class="hiw-icon">🤖</div><div class="hiw-title">AI analysis</div><div class="hiw-desc">Our engine matches your profile against career paths and calculates a precise fit score.</div></div>
+    <div class="hiw-card"><div class="hiw-num">03</div><div class="hiw-icon">📊</div><div class="hiw-title">See your gaps</div><div class="hiw-desc">Visual skill gap chart shows exactly what you have and what to learn next.</div></div>
+    <div class="hiw-card"><div class="hiw-num">04</div><div class="hiw-icon">🗺️</div><div class="hiw-title">Follow the plan</div><div class="hiw-desc">Get a step-by-step roadmap, 7-day study planner, and college recommendations.</div></div>
+  </div>
+</div>
+</div>
+
+<div class="page" id="colleges">
+  <div class="sec-head">
+    <div class="sec-kicker">// higher education</div>
+    <div class="sec-title">Top colleges for M.Tech</div>
+    <div class="sec-desc">Best institutions for postgraduate engineering in India</div>
+  </div>
+  <div style="padding-bottom:3.5rem">
+    <div class="college-grid">
+      <div class="col-card"><div class="col-name">IIT Madras</div><div class="col-type">Central University · Chennai</div><div class="col-tags"><span class="col-tag">Rank #1</span><span class="col-tag">GATE</span><span class="col-tag">M.Tech</span></div></div>
+      <div class="col-card"><div class="col-name">IIT Bombay</div><div class="col-type">Central University · Mumbai</div><div class="col-tags"><span class="col-tag">Rank #2</span><span class="col-tag">GATE</span><span class="col-tag">M.Tech</span></div></div>
+      <div class="col-card"><div class="col-name">NIT Trichy</div><div class="col-type">National Institute · Trichy</div><div class="col-tags"><span class="col-tag">Rank #8</span><span class="col-tag">GATE</span><span class="col-tag">M.Tech</span></div></div>
+      <div class="col-card"><div class="col-name">Anna University</div><div class="col-type">State University · Chennai</div><div class="col-tags"><span class="col-tag">Top State</span><span class="col-tag">TANCET</span><span class="col-tag">M.E.</span></div></div>
+      <div class="col-card"><div class="col-name">BITS Pilani</div><div class="col-type">Deemed University · Rajasthan</div><div class="col-tags"><span class="col-tag">Rank #5</span><span class="col-tag">BITS HD</span><span class="col-tag">M.E.</span></div></div>
+      <div class="col-card"><div class="col-name">PSG Tech</div><div class="col-type">Autonomous · Coimbatore</div><div class="col-tags"><span class="col-tag">Top TN</span><span class="col-tag">TANCET</span><span class="col-tag">M.E.</span></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()"><i class="ti ti-x"></i></button>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<button class="chat-fab" id="chat-fab" onclick="toggleChat()">
+  <i class="ti ti-message-chatbot"></i>
+  <i class="ti ti-x"></i>
+</button>
+<div class="chat-win" id="chat-win">
+  <div class="chat-hdr">
+    <div class="chat-hdr-dot"></div>
+    <div class="chat-hdr-info">
+      <div class="chat-hdr-title">CareerBot</div>
+      <div class="chat-hdr-sub">AI career assistant · offline mode</div>
+    </div>
+  </div>
+  <div class="chat-msgs" id="chat-msgs">
+    <div class="chat-msg bot">Hi! I'm CareerBot 👋 Ask me anything about careers, skills to learn, colleges, or placement prep for engineering students!</div>
+  </div>
+  <div class="chat-suggs" id="chat-suggs">
+    <button class="chat-sugg" onclick="sendChat('Which career suits ECE students?')">Career for ECE?</button>
+    <button class="chat-sugg" onclick="sendChat('What skills should I learn first?')">Skills to learn?</button>
+    <button class="chat-sugg" onclick="sendChat('How to prepare for GATE ECE?')">GATE prep?</button>
+    <button class="chat-sugg" onclick="sendChat('Best colleges for M.Tech in Tamil Nadu?')">Best colleges?</button>
+  </div>
+  <div class="chat-foot">
+    <input id="chat-in" type="text" placeholder="Ask CareerBot..." onkeydown="if(event.key==='Enter')sendChat()">
+    <button class="chat-send-btn" onclick="sendChat()"><i class="ti ti-send" style="font-size:14px"></i></button>
+  </div>
+</div>
+
+<footer>
+  <strong>CareerCompass</strong> — AI-Powered Personalized Career & Education Advisory Portal<br>
+  SIH25094 · Smart Education · Government of Jammu & Kashmir<br>
+  Jayasakthi V · 922525106130 · V.S.B. Engineering College, Karur
+</footer>
+
+<script>
+const interests=[],userSkills=[];
+
+const CAREERS={
+  ECE:[
+    {id:1,title:'Embedded Systems Engineer',icon:'🔧',sub:'Firmware, hardware & IoT devices',skills:['C++','Arduino','Embedded C','IoT','RTOS'],desc:'Develop firmware for microcontrollers, design PCBs, and build IoT devices. High demand in automotive, aerospace, and consumer electronics.',scope:'₹4–14 LPA · High demand · ISRO, BHEL, Bosch, Qualcomm',steps:['Master C/C++ and Embedded C','Learn Arduino and ESP32','Study RTOS basics','Build 3 hardware projects','Apply for embedded internships']},
+    {id:2,title:'AI / ML Engineer',icon:'🤖',sub:'Intelligent systems and models',skills:['Python','NumPy','TensorFlow','Scikit-learn','MATLAB'],desc:'Design and deploy machine learning models for signal processing, image recognition, and predictive analytics.',scope:'₹6–20 LPA · Very high demand · Google, Amazon, Infosys',steps:['Learn Python deeply','Study ML fundamentals','Complete Andrew Ng ML course','Build 2–3 ML projects','Get Kaggle experience']},
+    {id:3,title:'VLSI Design Engineer',icon:'⚡',sub:'Chip design & semiconductor circuits',skills:['MATLAB','Verilog','Signal Processing','Circuit Design','VHDL'],desc:'Design digital/analog circuits at chip level. Work with semiconductor companies like Intel, NVIDIA, Qualcomm.',scope:'₹5–18 LPA · High paying · Intel, NVIDIA, TI, Qualcomm',steps:['Study Digital Electronics deeply','Learn Verilog/VHDL','Master Signal Processing','Prepare for GATE ECE','Apply to VLSI companies']},
+    {id:4,title:'Data Analyst',icon:'📊',sub:'Turn data into insights',skills:['Python','Matplotlib','NumPy','MySQL','Excel'],desc:'Analyze large datasets, build dashboards, and support business decisions. Great entry point for ECE students.',scope:'₹3.5–12 LPA · High demand · TCS, Wipro, startups',steps:['Master Python + Pandas','Learn SQL deeply','Study data visualization','Build analytics projects','Get Power BI/Tableau cert']},
+    {id:5,title:'Software Developer',icon:'💻',sub:'Web and software applications',skills:['JavaScript','HTML/CSS','Python','MySQL','React'],desc:'Develop web apps, APIs, and software products. ECE students with coding skills are highly valued.',scope:'₹4–15 LPA · Very high demand · All IT companies',steps:['Strengthen HTML/CSS/JS','Learn React framework','Build 3 full-stack projects','Practice DSA on LeetCode','Target campus placements']},
+    {id:6,title:'IoT Solutions Architect',icon:'🌐',sub:'Connect devices to cloud',skills:['IoT','Arduino','Python','MQTT','ESP32'],desc:'Design end-to-end IoT solutions for smart homes, industries, and cities.',scope:'₹4–12 LPA · Growing rapidly · Startups, MNCs, PSUs',steps:['Master Arduino and ESP32','Learn cloud platforms (AWS IoT)','Study MQTT and protocols','Build 2 IoT projects','Explore Industrial IoT certifications']},
+  ],
+  CSE:[
+    {id:1,title:'Software Engineer',icon:'💻',sub:'Build products at scale',skills:['JavaScript','Python','React','MySQL','DSA'],desc:'Core software development role in product or service companies.',scope:'₹5–20 LPA · Unlimited demand · All IT companies',steps:['Master DSA','Learn full-stack development','Build portfolio projects','Practice system design','Target FAANG/product companies']},
+    {id:2,title:'AI / ML Engineer',icon:'🤖',sub:'Build intelligent systems',skills:['Python','TensorFlow','NumPy','Scikit-learn','OpenCV'],desc:'Design and deploy intelligent systems. CSE background gives a strong foundation.',scope:'₹6–25 LPA · Fastest growing · Google, Amazon, OpenAI',steps:['Master Python','Complete ML course','Learn deep learning','Build real ML projects','Contribute to open source']},
+    {id:3,title:'Cybersecurity Analyst',icon:'🔒',sub:'Protect systems from threats',skills:['Cybersecurity','Python','Linux','Networking','Ethical Hacking'],desc:'Protect organizations from cyber attacks. Massive shortage of skilled professionals.',scope:'₹5–18 LPA · Critical demand · Every sector',steps:['Learn networking basics','Study ethical hacking','Get CEH certification','Practice on HackTheBox','Build a security portfolio']},
+  ],
+  EEE:[
+    {id:1,title:'Power Systems Engineer',icon:'⚡',sub:'Electrical power & grid systems',skills:['Circuit Design','MATLAB','AutoCAD','Power Systems','PLC'],desc:'Design and maintain electrical power systems for industries, utilities, and infrastructure.',scope:'₹4–12 LPA · Steady demand · TNEB, BHEL, L&T',steps:['Master Circuit Analysis','Learn MATLAB/Simulink','Study Power Electronics','Get hands-on with PLC','Apply for PSU/Govt jobs']},
+    {id:2,title:'Embedded Systems Engineer',icon:'🔧',sub:'Hardware & control systems',skills:['C++','Arduino','Embedded C','IoT','PLC'],desc:'Work on industrial automation, control systems, and embedded hardware.',scope:'₹4–14 LPA · High demand · ABB, Siemens, Bosch',steps:['Learn C/C++','Study microcontrollers','Learn PLC programming','Work on automation projects','Target core EEE companies']},
+  ]
+};
+
+const ROADMAPS={
+  internship:{icon:'🎯',title:'Get a great internship',sub:'Short-term goal roadmap',steps:['Polish your resume with GitHub projects','Deploy at least one project online','Apply to 15+ internships on Internshala','Prepare for technical interviews (DSA basics)','Follow up within 3–5 days of applying']},
+  gate:{icon:'📚',title:'GATE ECE Preparation',sub:'Short-term goal roadmap',steps:['Complete Engineering Mathematics (3 months)','Cover all core ECE subjects systematically','Solve 10 years of previous GATE papers','Take mock tests weekly from month 6','Target score above 650 for top NITs/IITs']},
+  placement:{icon:'🏢',title:'Campus Placement Plan',sub:'Short-term goal roadmap',steps:['Master DSA — Arrays, LinkedList, Trees, Graphs','Practice 150+ LeetCode problems','Build 2–3 strong projects with live deployment','Prepare HR answers (Tell me about yourself)','Apply for PPOs via internships']},
+  project:{icon:'🛠️',title:'Build Strong Projects',sub:'Short-term goal roadmap',steps:['Pick one domain (Web / Embedded / AI / IoT)','Build one beginner guided project','Build one intermediate original project','Deploy all projects on GitHub Pages','Write README and document everything']},
+  cert:{icon:'🏅',title:'Get Certifications',sub:'Short-term goal roadmap',steps:['Complete NPTEL course in your domain','Get Cisco Networking Academy cert','Finish Infosys Springboard modules','Add all certs to LinkedIn','Target Google or AWS certification next']},
+};
+
+const PLANNER=[
+  {task:'Watch foundational tutorial on your top weak skill',dur:'45 min'},
+  {task:'Practice hands-on exercises or coding problems',dur:'1 hr'},
+  {task:'Read documentation or a technical article',dur:'30 min'},
+  {task:'Work on your mini project or portfolio piece',dur:'1.5 hr'},
+  {task:'Revise previous concepts and take structured notes',dur:'30 min'},
+  {task:'Take a mock test or quiz on topics learned this week',dur:'45 min'},
+  {task:'Rest, reflect, and plan next week goals',dur:'20 min'},
+];
+
+// ── OFFLINE CHATBOT RESPONSES ──
+const BOT_RESPONSES=[
+  {keys:['ece','electronics','communication'],reply:`Great choice! Top career paths for ECE students:\n• Embedded Systems Engineer (₹4–14 LPA)\n• AI/ML Engineer (₹6–20 LPA)\n• VLSI Design Engineer (₹5–18 LPA)\n• IoT Solutions Architect (₹4–12 LPA)\n• Data Analyst (₹3.5–12 LPA)\nUse the Career Advisor above to get your personalized match score! 🎯`},
+  {keys:['skill','learn','start','begin','first'],reply:`Top skills to learn as an engineering student:\n• Python — most versatile, high demand\n• HTML/CSS/JavaScript — for web development\n• C++ — for embedded and systems programming\n• Arduino/ESP32 — for IoT and hardware\n• MATLAB — for signal processing and simulations\nStart with Python if you're a beginner! 🚀`},
+  {keys:['gate','exam','competitive'],reply:`GATE ECE Preparation Plan:\n• Start with Engineering Mathematics (3 months)\n• Cover Networks, Signals, Electronics, Communications\n• Solve 10 years of previous GATE papers\n• Take mock tests every week after month 6\n• Target score 650+ for top NITs/IITs\nBest resources: NPTEL, ACE Academy, Made Easy 📚`},
+  {keys:['college','mtech','higher','pg','study'],reply:`Top colleges for M.Tech ECE in India:\n• IIT Madras (Rank #1) — GATE required\n• IIT Bombay (Rank #2) — GATE required\n• NIT Trichy (Rank #8) — GATE required\n• Anna University — TANCET for Tamil Nadu\n• PSG Tech Coimbatore — Top autonomous college TN\nTarget GATE score 600+ for NITs, 750+ for IITs! 🏛️`},
+  {keys:['placement','job','company','interview','recruit'],reply:`Campus Placement Preparation:\n• Master DSA — LeetCode Easy + Medium problems\n• Build 2–3 strong projects with live deployment\n• Target internships for Pre-Placement Offers\n• Practice HR rounds: Tell me about yourself, strengths\n• Apply to TCS, Infosys, Wipro in 3rd year, aim for product companies in 4th year 🏢`},
+  {keys:['internship','intern','apply'],reply:`How to get a good internship:\n• Deploy projects on GitHub Pages first\n• Create profile on Internshala, LinkedIn\n• Apply to 15–20 internships — don't apply to just 1–2\n• Infosys Springboard, BHEL, ISRO offer good internships for ECE\n• Follow up after 3–5 days if no reply\nYour mini project is a great portfolio piece! ✅`},
+  {keys:['python','ml','ai','machine learning','data'],reply:`Python & AI/ML Learning Roadmap:\n• Week 1–2: Python basics (variables, loops, functions)\n• Week 3–4: NumPy and Pandas\n• Month 2: Matplotlib + data visualization\n• Month 3: Scikit-learn ML basics\n• Month 4–5: Deep Learning with TensorFlow\nBest free resource: CS50P on edX for Python! 🤖`},
+  {keys:['resume','cv','portfolio'],reply:`Resume tips for engineering students:\n• Lead with your projects, not your CGPA\n• Use action verbs: Built, Developed, Designed, Implemented\n• Add live project links (GitHub Pages)\n• One page only for students\n• Add skills section with tech stack keywords\nYour CareerCompass project itself is a great resume item! 💼`},
+  {keys:['salary','lpa','package','pay'],reply:`Expected salary ranges for ECE graduates:\n• Entry level software: ₹4–8 LPA\n• Embedded systems: ₹4–7 LPA\n• VLSI design: ₹5–10 LPA\n• Data analyst: ₹3.5–7 LPA\n• After 3–5 years experience: ₹10–20 LPA\n• MNCs like Google/Amazon: ₹20–50 LPA+ 💰`},
+  {keys:['isro','bhel','psu','government','govt'],reply:`Government/PSU careers for ECE:\n• ISRO — Scientist/Engineer through GATE\n• BHEL — Engineer Trainee through GATE/interview\n• TNEB (Tamil Nadu) — Junior Engineer exam\n• BEL, DRDO, HAL — through GATE scores\n• Indian Railways — SSC JE exam\nStart preparing GATE from 3rd year for PSU jobs! 🏛️`},
+  {keys:['vsb','karur','college','tamil'],reply:`Great that you're from V.S.B. Engineering College, Karur! 🎓\nFor placement from your college:\n• Focus on building strong GitHub projects\n• Participate in online hackathons (including SIH!)\n• Target Karur/Erode based companies first, then Chennai IT corridor\n• Your CareerCompass project is excellent for interviews!\nAll the best for your meeting tomorrow! 💪`},
+  {keys:['sih','hackathon','smart india'],reply:`Smart India Hackathon (SIH) tips:\n• You already have a great project — CareerCompass!\n• PS SIH25094 (Smart Education) is your target\n• Make sure your demo is working smoothly\n• Prepare a 2-minute project pitch\n• Judges look for: Innovation, Feasibility, Impact, Presentation\nYou're already ahead of most classmates! 🏆`},
+];
+
+const FALLBACK_RESPONSES=[
+  `That's a great question! As an ECE engineering student, I'd suggest focusing on building practical skills through projects alongside your academics. Use the Career Advisor above to get a personalized plan based on your specific profile! 🎯`,
+  `Good question! The key to success in engineering is combining theoretical knowledge with hands-on projects. Add your skills in the Career Advisor tab to get personalized career recommendations! 💡`,
+  `For engineering students in India, the most important things are: strong fundamentals, practical projects, good communication skills, and starting early with internships. Try the full Career Advisor above for a personalized roadmap! 🚀`,
+];
+let fallbackIdx=0;
+
+function getBotReply(msg){
+  const lower=msg.toLowerCase();
+  for(const r of BOT_RESPONSES){
+    if(r.keys.some(k=>lower.includes(k))) return r.reply;
+  }
+  return FALLBACK_RESPONSES[fallbackIdx++%FALLBACK_RESPONSES.length];
+}
+
+// ── TAB LOGIC ──
+function goTab(name,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tp-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+function goTabNext(name){
+  const order=['profile','interests','skills','goals'];
+  const tabs=document.querySelectorAll('.tab');
+  const idx=order.indexOf(name);
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tp-'+name).classList.add('active');
+  tabs[idx].classList.add('active');
+}
+
+// ── INTERESTS & SKILLS ──
+function addInt(v){if(!interests.includes(v)){interests.push(v);renderInts();}}
+function removeInt(v){const i=interests.indexOf(v);if(i>-1){interests.splice(i,1);renderInts();}}
+function renderInts(){document.getElementById('int-chips').innerHTML=interests.map(s=>`<button class="chip" onclick="removeInt('${s}')"><i class="ti ti-x"></i>${s}</button>`).join('');}
+function addSkill(){const inp=document.getElementById('skill-in');const v=inp.value.trim();if(v&&!userSkills.includes(v)){userSkills.push(v);renderSkills();}inp.value='';}
+function qs(s){if(!userSkills.includes(s)){userSkills.push(s);renderSkills();}}
+function removeSkill(s){const i=userSkills.indexOf(s);if(i>-1){userSkills.splice(i,1);renderSkills();}}
+function renderSkills(){document.getElementById('skill-chips').innerHTML=userSkills.map(s=>`<button class="chip" onclick="removeSkill('${s}')"><i class="ti ti-x"></i>${s}</button>`).join('');}
+
+// ── MATCH SCORE ──
+function calcScore(career){
+  if(!userSkills.length)return Math.floor(Math.random()*25)+55;
+  const req=career.skills.map(s=>s.toLowerCase());
+  const has=userSkills.map(s=>s.toLowerCase());
+  const matched=req.filter(r=>has.some(h=>h.includes(r)||r.includes(h)));
+  let score=Math.round((matched.length/req.length)*100);
+  if(interests.some(i=>career.title.toLowerCase().includes(i.toLowerCase().split(' ')[0])))score=Math.min(100,score+12);
+  return score;
+}
+
+// ── RUN ──
+const loadMsgs=['Analyzing academic profile...','Matching career paths...','Calculating skill scores...','Building learning roadmap...','Recommending colleges...','Finalizing your plan...'];
+let allCareers=[];
+
+function runAdvisor(){
+  const name=document.getElementById('p-name').value;
+  const dept=document.getElementById('p-dept').value;
+  if(!name||!dept){alert('Please enter your name and select your department first!');return;}
+  document.getElementById('loader').classList.add('show');
+  document.getElementById('results').classList.remove('show');
+  let step=0;
+  const iv=setInterval(()=>{if(step<loadMsgs.length)document.getElementById('loader-step').textContent=loadMsgs[step++];},320);
+  setTimeout(()=>{
+    clearInterval(iv);
+    document.getElementById('loader').classList.remove('show');
+    buildResults();
+    document.getElementById('results').classList.add('show');
+    document.getElementById('results').scrollIntoView({behavior:'smooth'});
+  },2100);
+}
+
+function buildResults(){
+  const name=document.getElementById('p-name').value||'Student';
+  const dept=document.getElementById('p-dept').value||'ECE';
+  const year=document.getElementById('p-year').value||'1';
+  const goal=document.getElementById('g-short').value||'project';
+  document.getElementById('res-name').textContent=name.split(' ')[0];
+  document.getElementById('res-meta').textContent=`${dept} · Year ${year} · ${userSkills.length} skills · ${interests.length} interests`;
+  const careers=(CAREERS[dept]||CAREERS.ECE).map(c=>({...c,score:calcScore(c)})).sort((a,b)=>b.score-a.score);
+  allCareers=careers;
+  // Cards
+  document.getElementById('career-grid').innerHTML=careers.map((c,i)=>{
+    const has=userSkills.map(s=>s.toLowerCase());
+    const matched=c.skills.filter(s=>has.some(h=>h.includes(s.toLowerCase())||s.toLowerCase().includes(h)));
+    const missing=c.skills.filter(s=>!has.some(h=>h.includes(s.toLowerCase())||s.toLowerCase().includes(h)));
+    const fill=c.score>=80?'linear-gradient(90deg,var(--gold),var(--amber))':c.score>=60?'linear-gradient(90deg,var(--green),#059669)':'linear-gradient(90deg,#60A5FA,#3B82F6)';
+    return `<div class="c-card${i===0?' top-match':''}" onclick="openModal(${c.id},'${dept}')">
+      ${i===0?'<div class="top-tag">Best Match</div>':''}
+      <div class="c-icon">${c.icon}</div>
+      <div class="c-title">${c.title}</div>
+      <div class="c-sub">${c.sub}</div>
+      <div class="c-match-row">
+        <div class="c-bar"><div class="c-fill" style="width:${c.score}%;background:${fill}"></div></div>
+        <span class="c-pct">${c.score}%</span>
+      </div>
+      <div class="c-skills">
+        ${matched.slice(0,2).map(s=>`<span class="s-pill s-have">${s}</span>`).join('')}
+        ${missing.slice(0,2).map(s=>`<span class="s-pill s-need">${s}</span>`).join('')}
+      </div>
+      <button class="c-view-btn">View roadmap →</button>
+    </div>`;
+  }).join('');
+  // Gap
+  const top=careers[0];
+  const has=userSkills.map(s=>s.toLowerCase());
+  document.getElementById('gap-chart').innerHTML=`
+    <div style="font-size:12px;color:var(--text3);margin-bottom:1rem;font-family:'JetBrains Mono',monospace">Skills comparison for <strong style="color:var(--text2)">${top.title}</strong></div>
+    ${top.skills.map(skill=>{
+      const matched=has.some(h=>h.includes(skill.toLowerCase())||skill.toLowerCase().includes(h));
+      const pct=matched?Math.floor(Math.random()*20)+72:Math.floor(Math.random()*30)+12;
+      return `<div class="gap-row"><div class="gap-lbl">${skill}</div><div class="gap-track">${matched?`<div class="gap-have" style="width:${pct}%"></div>`:`<div class="gap-miss" style="width:${pct}%"></div>`}</div><div class="gap-val">${pct}%</div></div>`;
+    }).join('')}
+    <div class="gap-footer">
+      <div class="gap-leg"><div class="gap-dot" style="background:var(--green)"></div>Skill you have</div>
+      <div class="gap-leg"><div class="gap-dot" style="background:var(--gold)"></div>Needs improvement</div>
+    </div>`;
+  // Roadmap
+  const rm=ROADMAPS[goal]||ROADMAPS.project;
+  document.getElementById('roadmap').innerHTML=`
+    <div class="roadmap-header"><div class="roadmap-icon">${rm.icon}</div><div><div class="roadmap-title">${rm.title}</div><div class="roadmap-sub">${rm.sub}</div></div></div>
+    <div class="road-steps">${rm.steps.map((s,i)=>`<div class="road-step"><div class="road-num">${String(i+1).padStart(2,'0')}</div><div class="road-text">${s}</div></div>`).join('')}</div>`;
+  // Planner
+  const hours=document.getElementById('g-hours').value;
+  document.getElementById('planner').innerHTML=hours?PLANNER.map((p,i)=>`<div class="planner-row"><div class="planner-day-tag">DAY ${i+1}</div><div class="planner-task">${p.task}</div><div class="planner-dur">${p.dur}</div></div>`).join(''):`<div style="padding:1.5rem;text-align:center;font-size:12px;color:var(--text3);font-family:'JetBrains Mono',monospace">Select daily study hours in Goals tab to generate your planner.</div>`;
+  // Colleges
+  document.getElementById('college-grid').innerHTML=[
+    {n:'IIT Madras',t:'Central · Chennai',tags:['Rank #1','GATE']},
+    {n:'NIT Trichy',t:'National · Trichy',tags:['Rank #8','GATE']},
+    {n:'Anna University',t:'State · Chennai',tags:['Top State','TANCET']},
+    {n:'PSG Tech',t:'Autonomous · Coimbatore',tags:['Top TN','TANCET']},
+  ].map(c=>`<div class="col-card"><div class="col-name">${c.n}</div><div class="col-type">${c.t}</div><div class="col-tags">${c.tags.map(t=>`<span class="col-tag">${t}</span>`).join('')}</div></div>`).join('');
+}
+
+function openModal(id,dept){
+  const careers=CAREERS[dept]||CAREERS.ECE;
+  const c=careers.find(x=>x.id===id);if(!c)return;
+  const has=userSkills.map(s=>s.toLowerCase());
+  const matched=c.skills.filter(s=>has.some(h=>h.includes(s.toLowerCase())||s.toLowerCase().includes(h)));
+  const missing=c.skills.filter(s=>!has.some(h=>h.includes(s.toLowerCase())||s.toLowerCase().includes(h)));
+  document.getElementById('modal-body').innerHTML=`
+    <div class="modal-icon">${c.icon}</div>
+    <div class="modal-title">${c.title}</div>
+    <div class="modal-score"><i class="ti ti-cpu" style="font-size:12px"></i>${c.score||'—'}% match</div>
+    <div class="modal-sec"><div class="modal-sec-label">about</div><p>${c.desc}</p></div>
+    <div class="modal-sec"><div class="modal-sec-label">scope & salary</div><p>${c.scope}</p></div>
+    <div class="modal-sec"><div class="modal-sec-label">skills you have (${matched.length}/${c.skills.length})</div>
+      <div class="modal-skills">${matched.length?matched.map(s=>`<span class="s-pill s-have">${s}</span>`).join(''):'<span style="font-size:12px;color:var(--text3)">Add your skills to see matches</span>'}</div>
+    </div>
+    ${missing.length?`<div class="modal-sec"><div class="modal-sec-label">skills to learn</div><div class="modal-skills">${missing.map(s=>`<span class="s-pill s-need">${s}</span>`).join('')}</div></div>`:''}
+    <div class="modal-sec"><div class="modal-sec-label">step-by-step roadmap</div><ul>${c.steps.map(s=>`<li>${s}</li>`).join('')}</ul></div>
+    <button class="modal-apply" onclick="closeModal();alert('Roadmap saved for ${c.title}!')">Save this roadmap</button>`;
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+function resetAdvisor(){document.getElementById('results').classList.remove('show');goTabNext('profile');document.querySelectorAll('.tab')[0].classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
+
+// ── CHATBOT (OFFLINE) ──
+function toggleChat(){
+  document.getElementById('chat-fab').classList.toggle('open');
+  document.getElementById('chat-win').classList.toggle('open');
+}
+function sendChat(text){
+  const inp=document.getElementById('chat-in');
+  const msg=text||inp.value.trim();
+  if(!msg)return;
+  inp.value='';
+  document.getElementById('chat-suggs').style.display='none';
+  appendMsg(msg,'user');
+  // Show typing
+  const typing=document.createElement('div');
+  typing.className='chat-typing';typing.id='typing';
+  typing.innerHTML='<span></span><span></span><span></span>';
+  document.getElementById('chat-msgs').appendChild(typing);
+  scrollChat();
+  // Simulate AI thinking delay
+  setTimeout(()=>{
+    document.getElementById('typing')?.remove();
+    appendMsg(getBotReply(msg),'bot');
+  },900+Math.random()*600);
+}
+function appendMsg(text,type){
+  const div=document.createElement('div');
+  div.className=`chat-msg ${type}`;
+  div.style.whiteSpace='pre-line';
+  div.textContent=text;
+  document.getElementById('chat-msgs').appendChild(div);
+  scrollChat();
+}
+function scrollChat(){const m=document.getElementById('chat-msgs');m.scrollTop=m.scrollHeight;}
+
+// ── STATS ──
+function animateStats(){
+  [{id:'s1',v:48},{id:'s2',v:320},{id:'s3',v:150},{id:'s4',v:5200}].forEach(t=>{
+    let cur=0;const step=Math.ceil(t.v/50);
+    const iv=setInterval(()=>{cur=Math.min(cur+step,t.v);document.getElementById(t.id).textContent=cur.toLocaleString()+(t.v===150?'+':'');if(cur>=t.v)clearInterval(iv);},25);
+  });
+}
+animateStats();
+</script>
+</body>
+</html>
